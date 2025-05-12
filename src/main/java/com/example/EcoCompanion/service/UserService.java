@@ -3,6 +3,7 @@ package com.example.EcoCompanion.service;
 import com.example.EcoCompanion.model.User;
 import com.example.EcoCompanion.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     // Registrazione dell'utente
     public String registerUser(User user) {
