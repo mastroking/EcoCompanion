@@ -3,70 +3,52 @@ package com.example.EcoCompanion.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Whitelist per Swagger
-    private static final String[] SWAGGER_WHITELIST = {
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html"
-    };
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    /**
-     * Configurazione Security per ambiente di sviluppo (dev)
-     * Swagger accessibile senza login, API protette
-     */
     @Bean
-    @Profile("dev")
-    public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disabilita CSRF per chiamate API
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(SWAGGER_WHITELIST).permitAll() // Swagger accessibile
-                        .requestMatchers("/api/auth/register").permitAll() // Permetti registrazione utente
-                        .anyRequest().authenticated() // Tutto il resto richiede login
-                )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessione server
-                .httpBasic(Customizer.withDefaults()); // Basic auth (utile per test API/Swagger)
-
-        return http.build();
-    }
-
-    /**
-     * Configurazione Security per ambiente di produzione (qualsiasi profilo tranne dev)
-     * Swagger protetto da login
-     */
-    @Bean
-    @Profile("!dev")
-    public SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable()) // Se usi solo API REST, meglio tenerlo disabilitato anche in prod
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(SWAGGER_WHITELIST).authenticated() // Swagger protetto da login
-                        .requestMatchers("/api/auth/register").permitAll() // Permetti registrazione
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/register",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Se in futuro passi a JWT
-                .httpBasic(Customizer.withDefaults()); // Basic auth (puoi aggiungere formLogin se preferisci)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    /**
-     * Encoder per password con BCrypt
-     */
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }

@@ -1,46 +1,32 @@
 package com.example.EcoCompanion.controller;
 
-import com.example.EcoCompanion.model.User;
-import com.example.EcoCompanion.repository.UserRepository;
+import com.example.EcoCompanion.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
-    private UserRepository userRepository;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
-        String username = loginData.get("username");
-        String password = loginData.get("password");
+    public String login(@RequestParam String username, @RequestParam String password) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
 
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (userOptional.isEmpty() || !passwordEncoder.matches(password, userOptional.get().getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        if (authentication.isAuthenticated()) {
+            return jwtUtils.generateToken(username);
+        } else {
+            throw new RuntimeException("Invalid credentials");
         }
-
-        // Simula un token per scopi di testing (puoi implementare JWT)
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Login successful");
-        response.put("token", "mock-jwt-token-for-" + username); // Sostituire con token reale
-        return ResponseEntity.ok(response);
     }
 }
