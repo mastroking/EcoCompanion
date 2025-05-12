@@ -18,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     // Endpoint di registrazione
-    @PostMapping("/register")
+    @PostMapping("/register-new")
     public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
         String message = userService.registerUser(user);
         if (message.equals("User registered successfully!")) {
