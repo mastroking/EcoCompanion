@@ -1,0 +1,43 @@
+<!-- src/main/resources/static/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pollution Tracker</title>
+    <link rel="stylesheet" href="/static/CSS/styles.css">
+</head>
+<body>
+<header>
+    <h1>Welcome to Pollution Tracker</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/static/templates/login.html">Login</a>
+        <a href="/static/templates/Register.html">Register</a>
+    </nav>
+</header>
+
+<main>
+    <section id="user-stats">
+        <!-- User pollution stats will be displayed here -->
+    </section>
+        <section id="add-data">
+            <!-- Form to add pollution data -->
+            <form id="data-form">
+                <label for="co2">CO2 Emission</label> <!-- Aggiunto l'elemento label qui -->
+                <input type="number" id="co2" placeholder="CO2 Emission" required />
+
+                <label for="energy">Energy Consumption</label> <!-- Aggiunto l'elemento label qui -->
+                <input type="number" id="energy" placeholder="Energy Consumption" required />
+
+                <label for="waste">Waste Generated</label> <!-- Aggiunto l'elemento label qui -->
+                <input type="number" id="waste" placeholder="Waste Generated" required />
+
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+</main>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
