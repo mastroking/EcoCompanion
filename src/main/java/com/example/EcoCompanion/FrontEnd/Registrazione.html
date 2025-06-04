@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione EcoCompanion</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e0f2f7; /* Light blue background */
+        }
+        /* Custom styles for better aesthetics */
+        .form-input {
+            @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500;
+        }
+        .form-label {
+            @apply block text-sm font-medium text-gray-700 mb-1;
+        }
+        .btn-primary {
+            @apply w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-300 ease-in-out;
+        }
+        .message-box {
+            @apply p-3 mt-4 rounded-md text-sm font-medium;
+        }
+        .message-success {
+            @apply bg-green-100 text-green-800;
+        }
+        .message-error {
+            @apply bg-red-100 text-red-800;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+<div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Registrati a EcoCompanion</h2>
+
+    <form id="registrationForm" class="space-y-4">
+        <!-- Username -->
+        <div>
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" id="username" name="username" class="form-input" required>
+        </div>
+
+        <!-- Email -->
+        <div>
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" id="email" name="email" class="form-input" required>
+        </div>
+
+        <!-- Password -->
+        <div>
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" id="password" name="password" class="form-input" required minlength="8">
+            <p class="text-xs text-gray-500 mt-1">Minimo 8 caratteri.</p>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+            <label for="confirmPassword" class="form-label">Conferma Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+        </div>
+
+        <!-- Nome -->
+        <div>
+            <label for="nome" class="form-label">Nome:</label>
+            <input type="text" id="nome" name="nome" class="form-input" required>
+        </div>
+
+        <!-- Cognome -->
+        <div>
+            <label for="cognome" class="form-label">Cognome:</label>
+            <input type="text" id="cognome" name="cognome" class="form-input" required>
+        </div>
+
+        <!-- Data di Nascita -->
+        <div>
+            <label for="data_nascita" class="form-label">Data di Nascita:</label>
+            <input type="date" id="data_nascita" name="data_nascita" class="form-input" required>
+        </div>
+
+        <!-- Genere -->
+        <div>
+            <label for="genere" class="form-label">Genere:</label>
+            <select id="genere" name="genere" class="form-input" required>
+                <option value="">Seleziona...</option>
+                <option value="M">Maschio</option>
+                <option value="F">Femmina</option>
+                <option value="Altro">Altro</option>
+                <option value="Non Specificato">Non specificato</option>
+            </select>
+        </div>
+
+        <!-- Codice Fiscale -->
+        <div>
+            <label for="codice_fiscale" class="form-label">Codice Fiscale:</label>
+            <input type="text" id="codice_fiscale" name="codice_fiscale" class="form-input" required maxlength="16" pattern="[A-Z0-9]{16}" title="Il codice fiscale deve essere di 16 caratteri alfanumerici.">
+            <p class="text-xs text-gray-500 mt-1">16 caratteri alfanumerici.</p>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-primary">Registrati</button>
+    </form>
+
+    <!-- Message Display Area -->
+    <div id="message" class="message-box hidden"></div>
+</div>
+
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Impedisce il submit predefinito del form
+
+        const messageDiv = document.getElementById('message');
+        messageDiv.classList.add('hidden'); // Nasconde messaggi precedenti
+        messageDiv.textContent = '';
+        messageDiv.classList.remove('message-success', 'message-error');
+
+        // Raccogli i dati del form
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const nome = document.getElementById('nome').value.trim();
+        const cognome = document.getElementById('cognome').value.trim();
+        const data_nascita = document.getElementById('data_nascita').value;
+        const genere = document.getElementById('genere').value;
+        const codice_fiscale = document.getElementById('codice_fiscale').value.trim().toUpperCase(); // Converti in maiuscolo per coerenza
+
+        // --- Validazione Frontend ---
+        let errors = [];
+
+        if (!username || !email || !password || !confirmPassword || !nome || !cognome || !data_nascita || !genere || !codice_fiscale) {
+            errors.push("Tutti i campi sono obbligatori.");
+        }
+
+        // Validazione Email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            errors.push("Inserisci un'email valida.");
+        }
+
+        // Validazione Password
+        if (password.length < 8) {
+            errors.push("La password deve essere lunga almeno 8 caratteri.");
+        }
+        if (password !== confirmPassword) {
+            errors.push("Le password non corrispondono.");
+        }
+
+        // Validazione Codice Fiscale (16 caratteri alfanumerici)
+        const cfRegex = /^[A-Z0-9]{16}$/;
+        if (!cfRegex.test(codice_fiscale)) {
+            errors.push("Il codice fiscale deve essere di 16 caratteri alfanumerici.");
+        }
+
+        // Mostra errori se presenti
+        if (errors.length > 0) {
+            messageDiv.classList.remove('hidden');
+            messageDiv.classList.add('message-error');
+            messageDiv.innerHTML = errors.map(err => `<li>${err}</li>`).join('');
+            return; // Ferma l'esecuzione se ci sono errori
+        }
+
+        // Dati da inviare al backend
+        const userData = {
+            username: username,
+            email: email,
+            password: password, // La password verrà hashata dal backend
+            nome: nome,
+            cognome: cognome,
+            data_nascita: data_nascita,
+            genere: genere,
+            codice_fiscale: codice_fiscale
+        };
+
+        try {
+            // Invia la richiesta POST al tuo controller Spring Boot
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData) // Converti l'oggetto JavaScript in stringa JSON
+            });
+
+            const responseText = await response.text(); // Leggi la risposta come testo
+
+            if (response.ok) { // Controlla se lo status è 2xx (es. 200 OK)
+                messageDiv.classList.remove('hidden');
+                messageDiv.classList.add('message-success');
+                messageDiv.textContent = "Registrazione completata con successo! Ora puoi effettuare il login.";
+                // Opzionale: reindirizza l'utente dopo un breve ritardo
+                setTimeout(() => {
+                    // window.location.href = '/login.html'; // Sostituisci con la tua pagina di login
+                }, 3000);
+            } else {
+                // Gestisci errori HTTP (es. 400 Bad Request, 500 Internal Server Error)
+                messageDiv.classList.remove('hidden');
+                messageDiv.classList.add('message-error');
+                messageDiv.textContent = `Errore durante la registrazione: ${responseText || 'Errore sconosciuto'}`;
+            }
+        } catch (error) {
+            console.error('Errore di rete o del server:', error);
+            messageDiv.classList.remove('hidden');
+            messageDiv.classList.add('message-error');
+            messageDiv.textContent = 'Si è verificato un errore di connessione. Riprova più tardi.';
+        }
+    });
+</script>
+</body>
+</html>

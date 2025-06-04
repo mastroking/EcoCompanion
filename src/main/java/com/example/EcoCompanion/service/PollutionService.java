@@ -2,7 +2,7 @@ package com.example.EcoCompanion.service;
 
 import com.example.EcoCompanion.entity.PollutionData;
 import com.example.EcoCompanion.entity.PollutionStats;
-import com.example.EcoCompanion.model.User;
+import com.example.EcoCompanion.model.Utente;
 import com.example.EcoCompanion.repository.PollutionRepository;
 import com.example.EcoCompanion.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +24,16 @@ public class PollutionService {
     @Autowired
     private UserRepository userRepository;
 
-    private User user;
+    private Utente utente;
 
     public PollutionData addPollutionData(PollutionData pollutionData, String username) {
         // Ottieni l'utente dal database
-        interface UserRepository extends JpaRepository<User, Long> {
-            Optional<User> findByUsername(String username);
+        interface UserRepository extends JpaRepository<Utente, Long> {
+            Optional<Utente> findByUsername(String username);
         }
 
         // Imposta l'utente che ha inserito i dati
-        pollutionData.setUser(user);
+        pollutionData.setUser(utente);
         pollutionData.setTimestamp(LocalDateTime.now());  // Imposta il timestamp per quando i dati sono stati inseriti
 
         // Salva i dati nel database
