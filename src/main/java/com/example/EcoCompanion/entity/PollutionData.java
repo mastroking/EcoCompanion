@@ -1,6 +1,7 @@
 package com.example.EcoCompanion.entity;
 
-import com.example.EcoCompanion.model.User;
+
+import com.example.EcoCompanion.model.Utente;
 import jakarta.persistence.*;
 
 import java.math.BigInteger;
@@ -14,7 +15,7 @@ public class PollutionData {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Relazione con l'utente
+    private Utente utente; // Relazione con l'utente
 
     private LocalDateTime timestamp;  // Per tracciare quando i dati sono stati inseriti
 
@@ -22,9 +23,9 @@ public class PollutionData {
     private BigInteger energyConsumption; // Consumo energetico (kWh)
     private BigInteger wasteProduced; // Rifiuti prodotti (kg)
 
-    public PollutionData(Long id, User user, LocalDateTime timestamp, BigInteger co2Emissions, BigInteger energyConsumption, BigInteger wasteProduced) {
+    public PollutionData(Long id, Utente utente, LocalDateTime timestamp, BigInteger co2Emissions, BigInteger energyConsumption, BigInteger wasteProduced) {
         this.id = id;
-        this.user = user;
+        this.utente = utente;
         this.timestamp = timestamp;
         this.co2Emissions = co2Emissions;
         this.energyConsumption = energyConsumption;
@@ -39,12 +40,12 @@ public class PollutionData {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Utente getUser() {
+        return utente;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Utente utente) {
+        this.utente = utente;
     }
 
     public LocalDateTime getTimestamp() {

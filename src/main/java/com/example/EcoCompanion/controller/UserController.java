@@ -2,7 +2,8 @@ package com.example.EcoCompanion.controller;
 
 
 
-import com.example.EcoCompanion.model.User;
+
+import com.example.EcoCompanion.model.Utente;
 import com.example.EcoCompanion.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class UserController {
 
     // Endpoint di registrazione
     @PostMapping("/register-new")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
-        String message = userService.registerUser(user);
+    public ResponseEntity<String> registerUser(@Valid @RequestBody Utente utente) {
+        String message = userService.registerUser(utente);
         if (message.equals("User registered successfully!")) {
             return ResponseEntity.ok(message);
         } else {

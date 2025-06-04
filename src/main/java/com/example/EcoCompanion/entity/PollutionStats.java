@@ -1,6 +1,7 @@
 package com.example.EcoCompanion.entity;
 
-import com.example.EcoCompanion.model.User;
+
+import com.example.EcoCompanion.model.Utente;
 import jakarta.persistence.*;
 
 import java.math.BigInteger;
@@ -14,7 +15,7 @@ public class PollutionStats {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;  // L'utente a cui appartiene questa statistica
+    private Utente utente;  // L'utente a cui appartiene questa statistica
 
     private BigInteger totalCO2;  // Emissioni totali di CO2 (come BigInteger)
     private BigInteger totalEnergy;  // Consumo energetico totale (come BigInteger)
@@ -24,8 +25,8 @@ public class PollutionStats {
     private BigInteger averageEnergy;  // Media del consumo energetico
     private BigInteger averageWaste;  // Media della produzione di rifiuti
 
-    public PollutionStats(User user, BigInteger totalCO2, BigInteger totalEnergy, BigInteger totalWaste) {
-        this.user = user;
+    public PollutionStats(Utente utente, BigInteger totalCO2, BigInteger totalEnergy, BigInteger totalWaste) {
+        this.utente = utente;
         this.totalCO2 = totalCO2;
         this.totalEnergy = totalEnergy;
         this.totalWaste = totalWaste;
@@ -49,12 +50,12 @@ public class PollutionStats {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Utente getUser() {
+        return utente;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Utente utente) {
+        this.utente = utente;
     }
 
     public BigInteger getTotalCO2() {

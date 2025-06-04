@@ -1,15 +1,15 @@
 package com.example.EcoCompanion.repository;
 
 
-import com.example.EcoCompanion.model.User;
+import com.example.EcoCompanion.model.Utente;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<Utente, Long> {
 
-    Optional<User> findByUsername(String username);
+    Optional<Utente> findByUsername(String username);
 
-    Optional<User> findByEmail(String email);
+    Optional<Utente> findByEmail(String email);
 }
