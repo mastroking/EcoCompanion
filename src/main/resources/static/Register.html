@@ -166,19 +166,21 @@
 
         // Dati da inviare al backend
         const userData = {
-            username: username,
-            email: email,
-            password: password, // La password verrà hashata dal backend
-            nome: nome,
-            cognome: cognome,
-            data_nascita: data_nascita,
-            genere: genere,
-            codice_fiscale: codice_fiscale
-        };
+    username: username,
+    email: email,
+    password: password,
+    nome: nome,
+    cognome: cognome,
+    dataNascita: data_nascita,
+    genere: genere,
+    codiceFiscale: codice_fiscale
+};
+
+
 
         try {
             // Invia la richiesta POST al tuo controller Spring Boot
-            const response = await fetch('/api/register', {
+           const response = await fetch('http://localhost:8080/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

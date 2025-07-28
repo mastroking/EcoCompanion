@@ -4,10 +4,9 @@ import com.example.EcoCompanion.entity.PollutionData;
 import com.example.EcoCompanion.entity.PollutionStats;
 import com.example.EcoCompanion.model.Utente;
 import com.example.EcoCompanion.repository.PollutionRepository;
-import com.example.EcoCompanion.repository.UserRepository;
+import com.example.EcoCompanion.repository.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -22,7 +21,7 @@ public class PollutionService {
     private PollutionRepository pollutionRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UtenteRepository utenteRepository;
 
     private Utente utente;
 
@@ -33,7 +32,7 @@ public class PollutionService {
         }
 
         // Imposta l'utente che ha inserito i dati
-        pollutionData.setUser(utente);
+        pollutionData.setUtente(utente);
         pollutionData.setTimestamp(LocalDateTime.now());  // Imposta il timestamp per quando i dati sono stati inseriti
 
         // Salva i dati nel database
@@ -42,14 +41,14 @@ public class PollutionService {
 
     public List<PollutionData> getPollutionData(String username) {
         // Ottieni i dati di inquinamento per l'utente autenticato
-        return pollutionRepository.findByUserUsername(username);
+        return pollutionRepository.findByUtenteUsername(username);
     }
 
     public PollutionStats calculateStats(String username) {
         // Calcola statistiche come la media dei consumi di CO2, rifiuti e energia
         // Implementazione di esempio, può essere personalizzata
         PollutionStats stats = new PollutionStats();
-        List<PollutionData> data = pollutionRepository.findByUserUsername(username);
+        List<PollutionData> data = pollutionRepository.findByUtenteUsername(username);
 
         BigInteger totalCo2 = BigInteger.valueOf(0), totalEnergy = BigInteger.valueOf(0), totalWaste = BigInteger.valueOf(0);
         for (PollutionData entry : data) {
